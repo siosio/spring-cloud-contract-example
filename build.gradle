@@ -1,0 +1,77 @@
+buildscript {
+  ext {
+    kotlinVersion = '1.4.0'
+    springBootVersion = '2.3.3.RELEASE'
+    springCloudVersion = "Hoxton.SR8"
+    scContractVersion = "2.2.4.RELEASE"
+  }
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
+    classpath("org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}")
+  }
+}
+
+allprojects {
+  group = "siosio"
+  version = "1.0.0"
+}
+
+
+subprojects {
+  apply plugin: 'kotlin'
+  apply plugin: 'kotlin-spring'
+  apply plugin: 'org.springframework.boot'
+  apply plugin: 'io.spring.dependency-management'
+  apply plugin: 'idea'
+  apply plugin: 'maven'
+  
+  dependencyManagement {
+    imports {
+      mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+  }
+
+  java.sourceCompatibility = JavaVersion.VERSION_11
+  
+  repositories {
+    mavenCentral()
+  }
+
+  dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+      exclude group: "org.junit.vintage", module: "junit-vintage-engine"
+      exclude group: "org.mockito", module: "mockito-junit-jupiter"
+    }
+
+    testImplementation "com.ninja-squad:springmockk:2.0.3"
+  }
+
+  dependencyManagement {
+    imports {
+      mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
+    }
+  }
+
+  test {
+    useJUnitPlatform()
+  }
+
+  compileKotlin {
+    kotlinOptions.jvmTarget = '1.8'
+    kotlinOptions.freeCompilerArgs = ["-Xjsr305=strict"]
+  }
+  
+  compileTestKotlin {
+    kotlinOptions.jvmTarget = '1.8'
+    kotlinOptions.freeCompilerArgs = ["-Xjsr305=strict"]
+  }
+}
+

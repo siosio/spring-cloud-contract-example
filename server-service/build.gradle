@@ -1,0 +1,16 @@
+import org.springframework.cloud.contract.verifier.config.TestFramework
+
+plugins {
+  id "org.springframework.cloud.contract" version "2.2.4.RELEASE"
+}
+apply plugin: 'maven'
+
+dependencies {
+  testImplementation("org.springframework.cloud:spring-cloud-starter-contract-verifier")
+}
+
+contracts {
+  testFramework = TestFramework.JUNIT5
+  basePackageForTests = 'siosio'
+  baseClassForTests = 'siosio.BaseTestClass'
+}
